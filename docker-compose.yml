@@ -1,0 +1,48 @@
+
+services:
+  flight-database:
+    container_name: flight-database
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flight-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flight-network
+
+  flight-backend:
+    container_name: flight-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - flight-database
+    command: uvicorn --reload --host 0.0.0.0 --port 8000 main:app 
+    env_file:
+      - src/.env
+    volumes:
+      - ./src:/app:cached
+    networks:
+      - flight-network
+    
+  
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - flight-network
+
+volumes:
+  postgres_data:
+
+networks:
+  flight-network:
+    driver: bridge
