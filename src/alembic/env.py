@@ -1,4 +1,3 @@
-import asyncio
 from logging.config import fileConfig
 from sqlalchemy import pool
 from dotenv import load_dotenv
