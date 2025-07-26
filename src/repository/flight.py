@@ -1,7 +1,7 @@
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, text
-from sqlalchemy.orm import aliased
+from sqlalchemy import select
+from sqlalchemy.orm import aliased, selectinload
 from datetime import date
 from models.flight import FlightEvent
 from models.location import City
@@ -29,7 +29,6 @@ class FlightRepository:
         destination_code: str,
         date: date
     ) -> List[FlightEvent]:
-        logger.debug(f"----- GET FLIGHT BY ORIGIN AND DESTINATION: {origin_code}, {destination_code}, {date} -----")
         origin_city = aliased(City)
         destination_city = aliased(City)
 
@@ -59,20 +58,24 @@ class FlightRepository:
 
         stmt = (
             select(f1, f2)
-
             .join(origin_city, f1.origin_id == origin_city.id)
-            .where(origin_city.code == origin_code)
-
-            .join(f2, f1.destination_id == f2.origin_id)
+            .join(f2,      f1.destination_id == f2.origin_id)
             .join(dest_city, f2.destination_id == dest_city.id)
-
-            .where(dest_city.code == destination_code)
-
-            .where(f2.departure_datetime >= f1.arrival_datetime)
+            .options(
+                selectinload(f1.origin),
+                selectinload(f1.destination),
+                selectinload(f2.origin),
+                selectinload(f2.destination),
+            )
+            .where(
+                origin_city.code == origin_code,
+                dest_city.code   == destination_code,
+                f2.departure_datetime >= f1.arrival_datetime,
+            )
         )
-
+        
         result = await self.session.execute(stmt)
-        return [(row[0], row[1]) for row in result.all()]
+        return result.scalars().all()
 
 
     async def get_flights_by_origin(

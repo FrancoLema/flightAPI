@@ -71,18 +71,18 @@ class FlightService:
             5. Return the flight_event with the lowest price
         """
         flight_events = await self.repository.get_flight_by_origin_and_destination(origin_code=origin.code, destination_code=destiny.code, date=date)
-        logger.debug(f"FLIGHT EVENT RESULT : {flight_events}")
 
         if flight_events:
             flight_circuits = self._create_flight_circuit_dict(flight_events=flight_events)
             return flight_circuits, True
 
         else:
-            flights_with_destiny = await self.repository.get_two_segment_connections(origin_code=origin.code, destination_code=destiny.code)
-            if flights_with_destiny is None:
+            flight_events = await self.repository.get_two_segment_connections(origin_code=origin.code, destination_code=destiny.code)
+            if flight_events is None:
                 return None, False
             else:
-                return flights_with_destiny, False
+                flight_circuits = self._create_flight_circuit_dict(flight_events=flight_events)
+                return flight_circuits, True
 
     async def _search_flight_connections(self, origin: City, destiny: City, date: datetime) -> Optional[FlightConnection]:
         """
