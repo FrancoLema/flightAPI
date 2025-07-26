@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import date, datetime
 
 
@@ -13,6 +13,8 @@ class FlightCircuit(BaseModel):
     to: str
     departure_time: datetime
     arrival_time: datetime
+    
+    model_config = ConfigDict(populate_by_name=True)
 
 class FlightConnection(BaseModel):
     connections: int

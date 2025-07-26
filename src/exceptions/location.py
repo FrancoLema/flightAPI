@@ -6,3 +6,6 @@ class StateNotFoundError(Exception):
 
 class CountryNotFoundError(Exception):
     pass
+
+class LocationNotFoundError(Exception):
+    pass

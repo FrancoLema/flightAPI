@@ -286,6 +286,16 @@ files = [
 all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2)"]
 
 [[package]]
+name = "logger"
+version = "1.4"
+description = "Python logging helper"
+optional = false
+python-versions = "*"
+files = [
+    {file = "logger-1.4.tar.gz", hash = "sha256:4ecac57133c6376fa215f0fe6b4dc4d60e4d1ad8be005cab4e8a702df682f8b3"},
+]
+
+[[package]]
 name = "mako"
 version = "1.3.10"
 description = "A super-fast templating language that borrows the best ideas from the existing templating languages."
@@ -833,4 +843,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.6.3)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "f3c90c715976ed81979cf7bf8542919b67352357cd84c4910ba58b3aac456adf"
+content-hash = "84b0f386adb34274cefe5592f992be4fd278597ae42d11ca7f9c4b8d10c78e44"

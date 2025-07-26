@@ -25,6 +25,7 @@ class FlightEvent(BaseModel):
         String,
         nullable=False,
         index=True,
+        unique=True,
     )
     departure_date: Mapped[date] = Column(
         Date,
