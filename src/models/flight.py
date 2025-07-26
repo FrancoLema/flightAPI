@@ -11,6 +11,7 @@ from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import Mapped, relationship
 from infrastructure.db import BaseModel
 
+
 class FlightEvent(BaseModel):
     __tablename__ = "flight_event"
 
@@ -55,5 +56,6 @@ class FlightEvent(BaseModel):
         nullable=False,
     )
     origin = relationship("City", foreign_keys=[origin_id], back_populates="departures")
-    destination = relationship("City", foreign_keys=[destination_id], back_populates="arrivals")
-
+    destination = relationship(
+        "City", foreign_keys=[destination_id], back_populates="arrivals"
+    )

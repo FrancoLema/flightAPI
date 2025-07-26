@@ -10,8 +10,6 @@ from alembic import context
 load_dotenv()
 
 # Import all models so Alembic can detect them
-from models.flight import FlightEvent
-from models.location import City
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -20,9 +18,13 @@ config = context.config
 # Set the SQLAlchemy URL from environment variables
 # Convert asyncpg URL to psycopg2 for Alembic
 if not BaseConfig.DATABASE_URL:
-    raise ValueError("DATABASE_URL environment variable is not set. Please check your .env file.")
+    raise ValueError(
+        "DATABASE_URL environment variable is not set. Please check your .env file."
+    )
 
-database_url = BaseConfig.DATABASE_URL.replace("postgresql+asyncpg://", "postgresql+psycopg2://")
+database_url = BaseConfig.DATABASE_URL.replace(
+    "postgresql+asyncpg://", "postgresql+psycopg2://"
+)
 config.set_main_option("sqlalchemy.url", database_url)
 
 # Interpret the config file for Python logging.
