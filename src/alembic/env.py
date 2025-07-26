@@ -5,11 +5,10 @@ from infrastructure.db import BaseModel
 from config.settings import BaseConfig
 from sqlalchemy import engine_from_config
 from alembic import context
+import models
 
 # Load environment variables first
 load_dotenv()
-
-# Import all models so Alembic can detect them
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

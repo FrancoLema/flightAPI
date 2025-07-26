@@ -6,6 +6,7 @@ from sqlalchemy import (
     Date,
     Boolean,
     ForeignKey,
+    String,
 )
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import Mapped, relationship
@@ -20,9 +21,10 @@ class FlightEvent(BaseModel):
         primary_key=True,
         autoincrement=True,
     )
-    flight_number: Mapped[int] = Column(
-        Integer,
+    flight_number: Mapped[str] = Column(
+        String,
         nullable=False,
+        index=True,
     )
     departure_date: Mapped[date] = Column(
         Date,

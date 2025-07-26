@@ -3,6 +3,33 @@ from sqlalchemy.orm import Mapped, relationship
 from infrastructure.db import BaseModel
 
 
+
+class Country(BaseModel):
+    __tablename__ = "country"
+
+    id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = Column(String, nullable=False)
+    code: Mapped[str] = Column(String, index=True, nullable=False)
+    coordinates: Mapped[str] = Column(String, nullable=False)
+    
+    # Relación con estados
+    states = relationship("State", back_populates="country")
+
+
+class State(BaseModel):
+    __tablename__ = "state"
+
+    id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
+    name: Mapped[str] = Column(String, nullable=False)
+    code: Mapped[str] = Column(String, index=True, nullable=False)
+    coordinates: Mapped[str] = Column(String, nullable=False)
+    country_id: Mapped[int] = Column(Integer, ForeignKey("country.id"), nullable=False)
+    country = relationship("Country", back_populates="states")
+    
+    # Relación con ciudades
+    cities = relationship("City", back_populates="state")
+
+
 class City(BaseModel):
     __tablename__ = "city"
 
@@ -15,21 +42,3 @@ class City(BaseModel):
     state = relationship("State", back_populates="cities")
 
 
-class State(BaseModel):
-    __tablename__ = "state"
-
-    id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
-    name: Mapped[str] = Column(String, nullable=False)
-    code: Mapped[str] = Column(String, index=True, nullable=False)
-    coordinates: Mapped[str] = Column(String, nullable=False)
-    country_id: Mapped[int] = Column(Integer, ForeignKey("country.id"), nullable=False)
-    country = relationship("Country", back_populates="states")
-
-
-class Country(BaseModel):
-    __tablename__ = "country"
-
-    id: Mapped[int] = Column(Integer, primary_key=True, autoincrement=True)
-    name: Mapped[str] = Column(String, nullable=False)
-    code: Mapped[str] = Column(String, index=True, nullable=False)
-    coordinates: Mapped[str] = Column(String, nullable=False)

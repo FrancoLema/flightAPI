@@ -7,3 +7,4 @@ load_dotenv()
 class BaseConfig:
     PROJECT_NAME = os.getenv("PROJECT_NAME")
     DATABASE_URL = os.getenv("DATABASE_URL")
+    MAX_FLIGHT_DATE_MONTHS = int(os.getenv("MAX_FLIGHT_DATE_MONTHS"))
