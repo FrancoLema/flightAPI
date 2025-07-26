@@ -49,10 +49,7 @@ class FlightService:
         return True, "Date is valid."
 
 
-    async def _validate_and_get_city(self, origin: str, destiny: str) -> tuple[City, City]:
-        if origin == destiny:
-            raise ValueError("Origin and destiny cannot be the same")
-        
+    async def _validate_and_get_city(self, origin: str, destiny: str) -> tuple[City, City]:        
         origin_city = await self.location_service.get_city(origin)
         if not origin_city:
             raise CityNotFoundError(f"City with code {origin} not found")
@@ -61,19 +58,44 @@ class FlightService:
             raise CityNotFoundError(f"City with code {destiny} not found")
         return origin_city, destiny_city
 
+    async def _get_flight_by_origin_and_destination(self, origin: City, destiny: City, date: datetime) -> None:
+        """
+        If its not a direct flight:
+            1. Search for all the flight_events with the same destiny
+            2. For each flight_event, filter for all the flight_events with the same origin
+            3. Exclude the flight events with a total duration greater than 24 hours
+            4. Exclude the flight events where the difference between the arrival of the first event and the departure of the second event is greater than 4 hours.
+            5. Return the flight_event with the lowest price
+        """
+        flight_event = await self.repository.get_flight_by_origin_and_destination(origin, destiny, date)
+        if flight_event:
+            return flight_event
+        else:
+            return None
+
+    async def _search_flight_connections(self, origin: City, destiny: City, date: datetime) -> FlightConnection:
+        """
+        Search for the flight in the database.
+        If its not a direct flight_event, we need to search for the origin and destiny between connections.
+            In this version we limit the MAX amount of flight-events in a travel to 2.  
+        """
+        flight_event = await self._get_flight_by_origin_and_destination(origin, destiny, date)
+        if flight_event:
+            return FlightConnection(connections=0, path=[flight_event])
+        else:
+            return FlightConnection(connections=1, path=[flight_event])
 
     async def search_flight(self, flight_info: FlightSchema) -> FlightConnection:
-        """
-        1. Validate that the origin and destiny exists. --> listo
-        2. Validate that the origin and destiny are different. --> listo
-        3. Validate that the date is valid --> listo
-        4. Search for the flight in the database
-            5. Check if the flight can be direct
-            6. If not, start to search the place with connections
-        """
-        origin, destiny = await self._validate_and_get_city(flight_info.from_, flight_info.to)
-        is_valid, error_message = await self._validate_flight_date(flight_info.date)
-        if not is_valid:
-            raise ValueError(error_message)
+        try:
+            if flight_info.from_ == flight_info.to:
+                raise ValueError("Origin and destiny cannot be the same")
+            origin, destiny = await self._validate_and_get_city(flight_info.from_, flight_info.to)
+            is_valid, error_message = await self._validate_flight_date(flight_info.date)
+            if not is_valid:
+                raise ValueError(error_message)
+            flight_connections = await self._search_flight_connections(origin, destiny, flight_info.date)
+                
+        except Exception as e:
+            raise ValueError(e)
         
-        return await self.repository.search_flight(flight_info)
+        return flight_connections
