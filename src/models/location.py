@@ -12,7 +12,6 @@ class Country(BaseModel):
     code: Mapped[str] = Column(String, index=True, nullable=False)
     coordinates: Mapped[str] = Column(String, nullable=False)
     
-    # Relación con estados
     states = relationship("State", back_populates="country")
 
 
@@ -26,7 +25,6 @@ class State(BaseModel):
     country_id: Mapped[int] = Column(Integer, ForeignKey("country.id"), nullable=False)
     country = relationship("Country", back_populates="states")
     
-    # Relación con ciudades
     cities = relationship("City", back_populates="state")
 
 
@@ -40,5 +38,4 @@ class City(BaseModel):
     timezone: Mapped[str] = Column(String, nullable=False)
     state_id: Mapped[int] = Column(Integer, ForeignKey("state.id"), nullable=False)
     state = relationship("State", back_populates="cities")
-
 
