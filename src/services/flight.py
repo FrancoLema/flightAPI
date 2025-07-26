@@ -6,7 +6,7 @@ from repository.location import LocationRepository
 from exceptions.location import CityNotFoundError
 from datetime import date, datetime
 from typing import Union
-from config.settings import settings
+from config.settings import BaseConfig
 from dateutil.relativedelta import relativedelta
 
 class FlightService:
@@ -40,7 +40,7 @@ class FlightService:
         if flight_date < today:
             return False, f"Flight date cannot be in the past. Today is {today}."
         
-        max_flight_date_months = settings.MAX_FLIGHT_DATE_MONTHS
+        max_flight_date_months = BaseConfig.MAX_FLIGHT_DATE_MONTHS
 
         six_months_from_today = today + relativedelta(months=max_flight_date_months)
         if flight_date > six_months_from_today:

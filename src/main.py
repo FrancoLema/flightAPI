@@ -1,7 +1,7 @@
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from routers import api_router
+from api import api_router
 from config.settings import BaseConfig as config
 
 
