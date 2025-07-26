@@ -32,3 +32,6 @@ migrate-up: @$(DOCKER) exec -it $(FLIGHT_APP) $(ALEMBIC) migrate
 
 migrate-down:
 	@$(ALEMBIC) downgrade -1
+
+test:
+	@$(DOCKER) exec -it $(FLIGHT_APP) pytest -v
