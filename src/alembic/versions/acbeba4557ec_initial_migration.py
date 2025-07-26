@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: abf0e3cc6eeb
+Revision ID: acbeba4557ec
 Revises: 
-Create Date: 2025-07-26 14:58:51.856481
+Create Date: 2025-07-26 22:36:33.511145
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'abf0e3cc6eeb'
+revision: str = 'acbeba4557ec'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,7 +31,7 @@ def upgrade() -> None:
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_country_code'), 'country', ['code'], unique=False)
+    op.create_index(op.f('ix_country_code'), 'country', ['code'], unique=True)
     op.create_table('state',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
@@ -44,7 +44,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['country_id'], ['country.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_state_code'), 'state', ['code'], unique=False)
+    op.create_index(op.f('ix_state_code'), 'state', ['code'], unique=True)
     op.create_table('city',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
@@ -58,7 +58,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['state_id'], ['state.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_city_code'), 'city', ['code'], unique=False)
+    op.create_index(op.f('ix_city_code'), 'city', ['code'], unique=True)
     op.create_table('flight_event',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('flight_number', sa.String(), nullable=False),
@@ -76,7 +76,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['origin_id'], ['city.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_flight_event_flight_number'), 'flight_event', ['flight_number'], unique=False)
+    op.create_index(op.f('ix_flight_event_flight_number'), 'flight_event', ['flight_number'], unique=True)
     # ### end Alembic commands ###
 
 
