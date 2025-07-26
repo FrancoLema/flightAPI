@@ -14,11 +14,8 @@ class FlightRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def get_flight(self, code: str) -> Optional[FlightEvent]:
-        return await self.session.get(FlightEvent, code)
-
     async def get_flights(self) -> List[FlightEvent]:
-        stmt = select(FlightEvent)
+        stmt = select(FlightEvent).where(FlightEvent.active)
         result = await self.session.execute(stmt)
         return result.scalars().all()
 
@@ -40,6 +37,7 @@ class FlightRepository:
                 origin_city.code      == origin_code,
                 destination_city.code        == destination_code,
                 FlightEvent.departure_date >= date,
+                FlightEvent.active,
             )
         )
 
@@ -55,9 +53,11 @@ class FlightRepository:
         f2 = aliased(FlightEvent)
         origin_city = aliased(City)
         dest_city   = aliased(City)
+        waiting_time = (f2.departure_datetime - f1.arrival_datetime).label("waiting_time")
+        total_duration  = (f2.arrival_datetime - f1.departure_datetime).label("total_duration")
 
         stmt = (
-            select(f1, f2)
+            select(f1, f2, waiting_time, total_duration)
             .join(origin_city, f1.origin_id == origin_city.id)
             .join(f2,      f1.destination_id == f2.origin_id)
             .join(dest_city, f2.destination_id == dest_city.id)
@@ -71,11 +71,13 @@ class FlightRepository:
                 origin_city.code == origin_code,
                 dest_city.code   == destination_code,
                 f2.departure_datetime >= f1.arrival_datetime,
+                f1.active,
+                f2.active,
             )
         )
         
         result = await self.session.execute(stmt)
-        return result.scalars().all()
+        return result.all()
 
 
     async def get_flights_by_origin(

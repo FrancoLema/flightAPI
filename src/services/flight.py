@@ -5,7 +5,7 @@ from repository.flight import FlightRepository
 from schemas.flight import FlightConnection, FlightCircuit
 from services.location import LocationService
 from exceptions.location import CityNotFoundError
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Union, Optional
 from config.settings import BaseConfig
 from dateutil.relativedelta import relativedelta
@@ -61,14 +61,30 @@ class FlightService:
             raise CityNotFoundError(f"City with code {destiny} not found")
         return origin_city, destiny_city
 
+    async def _filter_date_for_connected_flights(self, flight_events: list[tuple[FlightEvent, FlightEvent]]) -> list[tuple[FlightEvent, FlightEvent]]:
+        """
+        Exclude the flight events with a total duration greater than 24 hours and the difference between the arrival of the first event and the departure of the second event is greater than 4 hours.
+        This both conditions are created in the repository, so we can filter directly by attributes.
+        """
+
+        max_duration =  timedelta(hours=BaseConfig.MAX_FLIGHT_DURATION_HOURS)
+        max_waiting_time = timedelta(hours=BaseConfig.MAX_WAITING_TIME_HOURS)
+
+        filtered_flights = []
+        for flight_event_1, flight_event_2, waiting_time, total_duration in flight_events:
+            if total_duration <= max_duration and waiting_time <= max_waiting_time:
+                flight_dict = {
+                    "origin": flight_event_1,
+                    "destination": flight_event_2,
+                }
+                filtered_flights.append(flight_dict)
+        return filtered_flights
+
     async def _get_flight_by_origin_and_destination(self, origin: City, destiny: City, date: date) -> tuple[Optional[FlightCircuit|None], bool]:
         """
         If its not a direct flight:
             1. Search for all the flight_events with the same destiny
             2. For each flight_event, filter for all the flight_events with the same origin
-            3. Exclude the flight events with a total duration greater than 24 hours
-            4. Exclude the flight events where the difference between the arrival of the first event and the departure of the second event is greater than 4 hours.
-            5. Return the flight_event with the lowest price
         """
         flight_events = await self.repository.get_flight_by_origin_and_destination(origin_code=origin.code, destination_code=destiny.code, date=date)
 
@@ -81,7 +97,8 @@ class FlightService:
             if flight_events is None:
                 return None, False
             else:
-                flight_circuits = self._create_flight_circuit_dict(flight_events=flight_events)
+                filtered_flights = await self._filter_date_for_connected_flights(flight_events=flight_events)
+                flight_circuits = self._create_flight_circuit_connections_dict(flight_events=filtered_flights)
                 return flight_circuits, True
 
     async def _search_flight_connections(self, origin: City, destiny: City, date: datetime) -> Optional[FlightConnection]:
@@ -129,6 +146,33 @@ class FlightService:
                 to=flight_event.destination.code,
                 departure_time=flight_event.departure_datetime,
                 arrival_time=flight_event.arrival_datetime
+            )
+            flight_circuits.append(flight_circuit)
+        
+        return flight_circuits
+    
+
+    def _create_flight_circuit_connections_dict(self, flight_events: list[dict[str, FlightEvent]]) -> list[FlightCircuit]:
+        """
+            Parse the flight events to a list of FlightCircuit.
+            The flight_events is a list of dictionaries with the first element being the first flight event and the second element being the second flight event.
+        """
+        flight_circuits = []
+        
+        for flight_connection in flight_events:
+            origin_event = flight_connection.get("origin")
+            dest_event   = flight_connection.get("destination")
+                
+            if not origin_event or not dest_event:
+                logger.warning(f"Incomplete flight connection: {flight_connection}")
+                continue
+
+            flight_circuit = FlightCircuit(
+                flight_number  = origin_event.flight_number,
+                from_          = origin_event.origin.code,
+                to             = dest_event.destination.code,
+                departure_time = origin_event.departure_datetime,
+                arrival_time   = dest_event.arrival_datetime,
             )
             flight_circuits.append(flight_circuit)
         
