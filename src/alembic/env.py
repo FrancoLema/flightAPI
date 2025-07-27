@@ -5,7 +5,6 @@ from infrastructure.db import BaseModel
 from config.settings import BaseConfig
 from sqlalchemy import engine_from_config
 from alembic import context
-import models
 
 # Load environment variables first
 load_dotenv()

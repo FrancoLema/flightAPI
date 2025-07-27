@@ -1,23 +1,71 @@
-# flightAPI
-API for flight search
+## About
 
-This application is a flight search tool built as part of a challenge. It’s developed with FastAPI, which enables high performance. For package management, I used Poetry. The application is fully containerized and organized with a simple, clear, and readable structure. 
+flightAPI is a challenge‑driven project implementing a high‑performance flight‑search service with FastAPI.  
+It exposes endpoints to:
 
-Please note that I completed this within the estimated timeframe, focusing on the core requirements of the challenge; with more time, i could have added a Redis container for cache, CI/CD pipelines,
-configured it to run in pods, and set up deployment.
+- Search direct flights by origin, destination and date  
+- Find valid two‑leg connections  
+- Retrieve city, state and country metadata  
+- …and more
+
+Please note that I completed this within the estimated timeframe, focusing on the core requirements of the challenge.
+
+## Features
+
+-  **FastAPI** for asynchronous, high‑throughput HTTP handling  
+-  **Poetry** for deterministic dependency management  
+-  **Dockerized** for easy local and CI/CD deployment  
+-  **Alembic** migrations to manage schema changes  
+-  **Mock seed data** loader for rapid testing  
+
+## Getting Started
+
+### Prerequisites
+
+- Docker & Docker Compose  
+- Python 3.11 (if you want to run scripts locally)  
+- (Optional) Make
+
+### Environment Variables
+
+Create a `.env` file in `src/` (ignored by Git) based on `dev.env`:
+
+```bash
+cp src/.env.example src/.env
+```
 
 
-# Instructions for setup the application
+### Instructions for setup the application
 
 Run the following commands
 
-1. **make up** (build and up the application)
-2. **make migrate** (migrate the initial migration)
-3. **make load-data** (load test data)
+```bash
+1. make up
+2. make migrate
+3. make load-data
+```
+
+
 
 and done! that's all, with that commands you can set up the application and try it.
 
-you can run tests with **make test** too.
+you can run tests with 
+```bash
+make test
+```
+
+
+**LOCALLY** check swagger docs in http://127.0.0.1:8000/docs
+
+## Future Improvements
+
+-  Add CI/CD pipelines (linting with Ruff, coverage checks)  
+-  Set up dedicated test databases for advanced test scenarios and end-to-end workflows  
+-  Integrate Redis caching
+-  Containerize with Kubernetes (Pods, Deployments, Helm charts)  
+-  Blue/Green or Canary deployments for zero‑downtime releases  
+
+
 
 
 Author: Franco Lema

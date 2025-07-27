@@ -5,19 +5,16 @@ from datetime import date
 
 router_flight = APIRouter()
 
+
 @router_flight.get("/", status_code=status.HTTP_200_OK)
 async def get_flight(
     date: date = Query(..., description="Fecha del vuelo (YYYY-MM-DD)"),
     origin: str = Query(..., alias="from", description="Código de la ciudad de origen"),
     destiny: str = Query(..., alias="to", description="Código de la ciudad de destino"),
-    service=Depends(flight_service)
+    service=Depends(flight_service),
 ):
     try:
-        flight = await service.search_flight(
-            date=date,
-            origin=origin,
-            destiny=destiny
-        )   
+        flight = await service.search_flight(date=date, origin=origin, destiny=destiny)
     except ValueError as e:
         raise HTTPException(
             detail=f"{str(e)}",
@@ -34,5 +31,3 @@ async def get_flight(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         ) from e
     return flight
-
-

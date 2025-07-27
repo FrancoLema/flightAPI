@@ -3,7 +3,6 @@ from sqlalchemy.orm import Mapped, relationship
 from infrastructure.db import BaseModel
 
 
-
 class Country(BaseModel):
     __tablename__ = "country"
 
@@ -11,7 +10,7 @@ class Country(BaseModel):
     name: Mapped[str] = Column(String, nullable=False)
     code: Mapped[str] = Column(String, index=True, nullable=False, unique=True)
     coordinates: Mapped[str] = Column(String, nullable=False)
-    
+
     states = relationship("State", back_populates="country")
 
 
@@ -40,6 +39,11 @@ class City(BaseModel):
 
     state = relationship("State", back_populates="cities")
     # Flight Events
-    departures = relationship("FlightEvent", foreign_keys="FlightEvent.origin_id", back_populates="origin")
-    arrivals = relationship("FlightEvent", foreign_keys="FlightEvent.destination_id", back_populates="destination")
-
+    departures = relationship(
+        "FlightEvent", foreign_keys="FlightEvent.origin_id", back_populates="origin"
+    )
+    arrivals = relationship(
+        "FlightEvent",
+        foreign_keys="FlightEvent.destination_id",
+        back_populates="destination",
+    )

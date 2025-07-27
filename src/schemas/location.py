@@ -1,5 +1,4 @@
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel
 
 
 class CountrySchema(BaseModel):
@@ -44,4 +43,4 @@ class CityResponse(BaseModel):
     code: str
     coordinates: str
     timezone: str
-    state_id: int 
+    state_id: int
