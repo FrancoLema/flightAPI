@@ -9,10 +9,6 @@ DOCKER_COMPOSE=docker-compose
 DOCKER=docker
 FLIGHT_APP=flight-backend
 
-build:
-	@echo "Starting application..."
-	@$(DOCKER_COMPOSE) up -d --build
-
 up:
 	@$(DOCKER_COMPOSE) up -d && docker attach $(FLIGHT_APP)
 
@@ -22,16 +18,12 @@ logs:
 it-back:
 	@$(DOCKER) exec -it $(FLIGHT_APP)
 
-init-migrate:
-	@$(DOCKER) exec -it $(FLIGHT_APP) $(ALEMBIC) init
 
 migrate:
 	@$(DOCKER) exec -it $(FLIGHT_APP) $(ALEMBIC) upgrade head
 
-migrate-up: @$(DOCKER) exec -it $(FLIGHT_APP) $(ALEMBIC) migrate
-
-migrate-down:
-	@$(ALEMBIC) downgrade -1
-
 test:
 	@$(DOCKER) exec -it $(FLIGHT_APP) pytest -v
+
+load-data:
+	@$(DOCKER) exec -it $(FLIGHT_APP) python data/load_data.py

@@ -1,0 +1,66 @@
+{
+        "countries": [
+        { "name": "Argentina", "code": "AR", "coordinates": "-38.4161,-63.6167" },
+        { "name": "España",    "code": "ES", "coordinates": "40.4637,-3.7492" },
+        { "name": "Germany",   "code": "DE", "coordinates": "51.1657,10.4515" }
+        ],
+        "states": [
+        {
+            "name": "Buenos Aires",
+            "code": "BA",
+            "coordinates": "-35.0000,-59.0000",
+            "country_code": "AR"
+        },
+        {
+            "name": "Comunidad de Madrid",
+            "code": "CM",
+            "coordinates": "40.4168,-3.7038",
+            "country_code": "ES"
+        },
+        {
+            "name": "Bavaria",
+            "code": "BY",
+            "coordinates": "48.7904,11.4979",
+            "country_code": "DE"
+        }
+        ],
+        "cities": [
+        {
+            "name": "Buenos Aires",
+            "code": "BUE",
+            "coordinates": "-34.6037,-58.3816",
+            "timezone": "America/Argentina/Buenos_Aires",
+            "state_code": "BA"
+        },
+        {
+            "name": "Madrid",
+            "code": "MAD",
+            "coordinates": "40.4168,-3.7038",
+            "timezone": "Europe/Madrid",
+            "state_code": "CM"
+        },
+        {
+            "name": "Munich",
+            "code": "MUC",
+            "coordinates": "48.1351,11.5820",
+            "timezone": "Europe/Berlin",
+            "state_code": "BY"                                             
+        }
+        ],
+        "flights": [
+        {
+            "flight_number": "UA100",
+            "departure_city_code": "BUE",
+            "arrival_city_code":   "MAD",
+            "departure_datetime":  "2025-08-01T22:00:00Z",
+            "arrival_datetime":    "2025-08-02T13:00:00Z"
+        },
+        {
+            "flight_number": "UA200",
+            "departure_city_code": "MAD",
+            "arrival_city_code":   "MUC",
+            "departure_datetime":  "2025-08-02T15:00:00Z",
+            "arrival_datetime":    "2025-08-02T17:00:00Z"
+        }
+        ]
+}

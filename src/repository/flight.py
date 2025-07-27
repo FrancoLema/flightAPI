@@ -5,7 +5,7 @@ from sqlalchemy.orm import aliased, selectinload
 from datetime import date
 from models.flight import FlightEvent
 from models.location import City
-from typing import Optional, List
+from typing import List
 
 logger = logging.getLogger(__name__)
 
