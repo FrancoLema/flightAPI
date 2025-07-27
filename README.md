@@ -17,6 +17,7 @@ Please note that I completed this within the estimated timeframe, focusing on th
 -  **Dockerized** for easy local and CI/CD deployment  
 -  **Alembic** migrations to manage schema changes  
 -  **Mock seed data** loader for rapid testing  
+-  **Code Style**: PEP8 compliance enforced via Ruff  
 
 ## Getting Started
 
