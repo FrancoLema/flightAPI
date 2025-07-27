@@ -98,7 +98,7 @@ class FlightService:
 
     async def _get_flight_by_origin_and_destination(
         self, origin: City, destiny: City, date: date
-    ) -> tuple[Optional[FlightCircuit | None], bool]:
+    ) -> tuple[Optional[FlightCircuit | None], bool, bool]:
         """
         If its not a direct flight:
             1. Search for all the flight_events with the same destiny
@@ -112,14 +112,14 @@ class FlightService:
             flight_circuits = self._create_flight_circuit_dict(
                 flight_events=flight_events
             )
-            return flight_circuits, True
+            return flight_circuits, False, True
 
         else:
             flight_events = await self.repository.get_two_segment_connections(
                 origin_code=origin.code, destination_code=destiny.code
             )
             if flight_events is None:
-                return None, False
+                return None, False, False
             else:
                 filtered_flights = await self._filter_date_for_connected_flights(
                     flight_events=flight_events
@@ -127,7 +127,7 @@ class FlightService:
                 flight_circuits = self._create_flight_circuit_connections_dict(
                     flight_events=filtered_flights
                 )
-                return flight_circuits, True
+                return flight_circuits, True, True
 
     async def _search_flight_connections(
         self, origin: City, destiny: City, date: datetime
@@ -137,13 +137,11 @@ class FlightService:
         If its not a direct flight_event, we need to search for the origin and destiny between connections.
             In this version we limit the MAX amount of flight-events in a travel to 2.
         """
-        flight_event, exists = await self._get_flight_by_origin_and_destination(
+        flight_event, many, exists = await self._get_flight_by_origin_and_destination(
             origin, destiny, date
         )
         if exists:
-            connections = 0
-            if len(flight_event) > 1:
-                connections = 1
+            connections = 0 if not many else 1
             return FlightConnection(connections=connections, path=flight_event)
         else:
             return None
