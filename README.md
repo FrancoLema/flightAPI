@@ -1,7 +1,10 @@
 # flightAPI
 API for flight search
 
-This application is a flight search tool built as part of a challenge. It’s developed with FastAPI, which enables high performance. For package management, I used Poetry. The application is fully containerized and organized with a simple, clear, and readable structure. Please note that I completed this within the estimated timeframe, focusing on the core requirements of the challenge; with more time, i could have added CI/CD pipelines, configured it to run in pods, and set up deployment.
+This application is a flight search tool built as part of a challenge. It’s developed with FastAPI, which enables high performance. For package management, I used Poetry. The application is fully containerized and organized with a simple, clear, and readable structure. 
+
+Please note that I completed this within the estimated timeframe, focusing on the core requirements of the challenge; with more time, i could have added a Redis container for cache, CI/CD pipelines,
+configured it to run in pods, and set up deployment.
 
 
 # Instructions for setup the application
