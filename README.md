@@ -60,12 +60,12 @@ make test
 
 ## Future Improvements
 
+-  Add Authentication to the endpoints 
 -  Add CI/CD pipelines (linting with Ruff, coverage checks)  
 -  Set up dedicated test databases for advanced test scenarios and end-to-end workflows  
 -  Integrate Redis caching
 -  Containerize with Kubernetes (Pods, Deployments, Helm charts)  
 -  Blue/Green or Canary deployments for zero‑downtime releases  
-
 
 
 
